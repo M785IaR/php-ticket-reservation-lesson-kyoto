@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/initialize.php';
 
+$eventObj = getEventInstance();
+
 // 入力を受け取る
 // [TODO fin] POSTからname/email/quantityを受け取る
 // [TODO fin] 受け取ったデータは、$input 変数に連想配列の形で格納する
@@ -24,7 +26,7 @@ if ($input['purchaser_name'] === '') {
 // [TODO] emailが「空でないこと」「emailのフォーマットとして適切であること」の確認
 if ($input['email'] === '') {
     $errord['email'] = 'emailを入力してください';
-} elseif (false === filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
+} elseif (false === $eventObj->validateEmail($input['email'])) {
     $errord['email'] = 'emailのフォーマットがおかしいです';
 }
 
@@ -32,9 +34,17 @@ if ($input['email'] === '') {
 // [TODO] quantityが「空でないこと」「整数であること」の確認
 if ($input['quantity'] === '') {
     $errord['quantity'] = 'チケット枚数を入力してください';
-} elseif (false === filter_var($input['quantity'], FILTER_VALIDATE_INT)) {
+} elseif (false === filter_var($input['quautity'], FILTER_VALIDATE_INT)) {
     $errord['quantity'] = 'チケット枚数のフォーマットがおかしいです';
 }
+
+
+// チケットの枚数制限
+$eventObj = getEventInstance();
+if (false === $eventObj->validateMaxTicketCount( (int)$input['quantity'] )){
+    $errord['quantity'] = 'チケット枚数の制限に引っ掛かりました';
+}
+
 
 // エラーがあった場合、入力フォームに戻す
 if (count($errord) > 0) {
