@@ -1,5 +1,8 @@
 <?php
 
+// 基準になるディレクトリを定数で指定
+define('BASEPATH', realpath(__DIR__ . '/..'));
+
 // タイムゾーン
 date_default_timezone_set('Asia/Tokyo');
 
